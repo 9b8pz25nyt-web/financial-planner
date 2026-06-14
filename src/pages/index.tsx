@@ -96,7 +96,14 @@ export default function Home() {
 
   return (
     <div style={{ padding: '20px', ...fontStyle, backgroundColor: colors.bg, maxWidth: '400px', margin: 'auto', minHeight: '100vh' }}>
-      <Head><link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet" /></Head>
+      <Head>
+  <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet" />
+  
+  {/* Add these lines */}
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#FFB7C5" />
+  <link rel="apple-touch-icon" href="/icon.svg" />
+</Head>
       
       <div style={{ textAlign: 'center' }}>
         <div style={{ display: 'inline-block', background: colors.border, padding: '10px', borderRadius: '15px', marginBottom: '10px' }}>
