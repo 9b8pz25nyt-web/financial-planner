@@ -1,23 +1,25 @@
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
 
-// Pastel theme constants
+// Optimized palette for higher contrast and better visibility
 const colors = {
   bg: '#FFF0F5',
   card: '#FFFFFF',
   border: '#FADADD',
-  darkBorder: '#E6A8B2',
-  primary: '#FFB7C5',
-  text: '#E6A8B2' 
+  darkBorder: '#C1667A', // Deeper rose for borders
+  primary: '#FF9CB1',    // Bolder pink for primary buttons
+  text: '#C1667A'        // Darker rose for all text
 };
 
 const fontStyle = { fontFamily: '"Mali", cursive', color: colors.text };
+
 const inputStyle = { 
   ...fontStyle, 
   padding: '8px', 
   borderRadius: '10px', 
-  border: `1px solid ${colors.border}`,
-  color: colors.text 
+  border: `1px solid ${colors.darkBorder}`, // Darker border for inputs
+  color: colors.text, 
+  backgroundColor: '#FFF' 
 };
 
 const MonthRow = ({ month, incomes, onAdd, onDelete, selectedYear }) => {
@@ -57,7 +59,26 @@ const MonthRow = ({ month, incomes, onAdd, onDelete, selectedYear }) => {
             <input placeholder="Amt" onChange={handleAmountChange} value={displayAmount} style={inputStyle} />
             <input placeholder="Description" onChange={(e) => setDescription(e.target.value)} value={description} style={inputStyle} />
             <input placeholder="Paste link" onChange={(e) => setLink(e.target.value)} value={link} style={inputStyle} />
-            <button onClick={() => { onAdd(month, Number(displayAmount.replace(/,/g, '')), description, link); setDisplayAmount(''); setDescription(''); setLink(''); }} style={{ background: colors.primary, color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', ...fontStyle }}>Add/Save</button>
+            <button 
+  onClick={() => { 
+    onAdd(month, Number(displayAmount.replace(/,/g, '')), description, link); 
+    setDisplayAmount(''); setDescription(''); setLink(''); 
+  }} 
+  style={{ 
+    background: colors.primary, 
+    color: '#FFFFFF',          // Pure white for maximum contrast
+    fontWeight: 'bold',        // Make the text pop
+    border: 'none', 
+    borderRadius: '8px',       // Slightly more rounded
+    padding: '10px',           // Larger clickable area
+    cursor: 'pointer', 
+    ...fontStyle, 
+    fontSize: '0.9rem',        // Slightly larger text
+    marginTop: '5px'           // Breathing room
+  }}
+>
+  Add/Save
+</button>
           </div>
         </div>
       )}
