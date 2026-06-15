@@ -110,8 +110,11 @@ export default function Home() {
       <div style={{ background: colors.card, padding: '15px', borderRadius: '20px', border: `2px solid ${colors.border}`, marginTop: '10px' }}>
         <p><strong>Total Income:</strong> ₱{total.toLocaleString()}</p>
         <div onClick={() => setIsEditing(true)}>
-          {isEditing ? <input type="number" value={target} onChange={(e) => setTarget(Number(e.target.value))} onBlur={() => setIsEditing(false)} style={inputStyle} /> 
-          : <p style={{ cursor: 'pointer', color: colors.primary }}><strong>Target:</strong> ₱{target.toLocaleString()}</p>}
+          {isEditing ? (
+            <input type="text" value={target.toLocaleString()} onChange={(e) => { const raw = e.target.value.replace(/,/g, ''); if (!isNaN(Number(raw))) setTarget(raw ? Number(raw) : 0); }} onBlur={() => setIsEditing(false)} style={inputStyle} />
+          ) : (
+            <p style={{ cursor: 'pointer', color: colors.primary }}><strong>Target:</strong> ₱{target.toLocaleString()}</p>
+          )}
         </div>
         <div style={{ background: colors.border, height: '12px', borderRadius: '6px' }}><div style={{ width: `${progress}%`, height: '100%', background: colors.primary }} /></div>
         <input placeholder="Paste BIR COR Link here" onChange={(e) => setBirLink(e.target.value)} value={birLink} style={{ ...inputStyle, marginTop: '10px', width: '90%' }} />
