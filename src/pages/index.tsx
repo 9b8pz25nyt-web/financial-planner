@@ -67,7 +67,8 @@ export default function Home() {
   const [theme, setTheme] = useState('kawaii');
   const [selectedYear, setSelectedYear] = useState(2026);
   const [incomes, setIncomes] = useState<any[]>([]);
-  const [target, setTarget] = useState(1000000);
+  // CHANGED: targets is now an object tracking each year
+  const [targets, setTargets] = useState({ 2025: 1000000, 2026: 1000000, 2027: 1000000, 2028: 1000000 });
   const [isEditingTarget, setIsEditingTarget] = useState(false);
   const [birLink, setBirLink] = useState('');
   
@@ -84,7 +85,10 @@ export default function Home() {
 
   const yearIncomes = incomes.filter(i => i.year === selectedYear);
   const total = yearIncomes.reduce((s, i) => s + (Number(i.amount) || 0), 0);
-  const progress = Math.min((total / target) * 100, 100);
+  
+  // CHANGED: Determine current target based on selectedYear
+  const currentTarget = targets[selectedYear] || 1000000;
+  const progress = Math.min((total / currentTarget) * 100, 100);
   
   const calcTax = (m1, m2, m3) => Math.max(0, (yearIncomes.filter(i => [m1, m2, m3].includes(i.month)).reduce((s, i) => s + (Number(i.amount) || 0), 0) - 250000) * 0.08);
 
@@ -124,9 +128,9 @@ export default function Home() {
         <p><strong>Gross Annual Income:</strong> ₱{total.toLocaleString()}</p>
         <div onClick={() => setIsEditingTarget(true)}>
           {isEditingTarget ? (
-            <input type="text" value={target.toLocaleString()} onChange={(e) => { const raw = e.target.value.replace(/,/g, ''); if (!isNaN(Number(raw))) setTarget(raw ? Number(raw) : 0); }} onBlur={() => setIsEditingTarget(false)} style={inputStyle} />
+            <input type="text" value={currentTarget.toLocaleString()} onChange={(e) => { const raw = e.target.value.replace(/,/g, ''); if (!isNaN(Number(raw))) setTargets({...targets, [selectedYear]: raw ? Number(raw) : 0}); }} onBlur={() => setIsEditingTarget(false)} style={inputStyle} />
           ) : (
-            <p style={{ cursor: 'pointer', color: colors.primary }}><strong>Annual Target:</strong> ₱{target.toLocaleString()}</p>
+            <p style={{ cursor: 'pointer', color: colors.primary }}><strong>Annual Target:</strong> ₱{currentTarget.toLocaleString()}</p>
           )}
         </div>
         <div style={{ background: colors.border, height: '12px', borderRadius: '6px', marginBottom: '10px' }}>
