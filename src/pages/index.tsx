@@ -100,11 +100,24 @@ export default function Home() {
       </button>
 
       <div style={{ textAlign: 'center' }}>
-        <div style={{ display: 'inline-block', background: colors.border, padding: '10px', borderRadius: '15px' }}><img src={`/${colors.icons.icon}`} alt="Icon" style={{ width: '60px' }} /></div>
-        <h1 style={{ color: colors.primary }}>My Financial Planner</h1>
+      
+
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ display: 'inline-block', background: colors.border, padding: '10px', borderRadius: '15px' }}>
+          <img src={`/${colors.icons.icon}`} alt="Icon" style={{ width: '60px' }} />
+        </div>
+        
+        {/* Updated Title Line */}
+        <h1 style={{ color: colors.primary, fontSize: '1.5rem', margin: '10px 0' }}>
+          Income Tracker for Tax Filing
+        </h1>
+        
         <select value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))} style={{ ...inputStyle, textAlign: 'center', width: '100px', display: 'block', margin: 'auto' }}>
           {[2025, 2026, 2027, 2028].map(y => <option key={y} value={y}>{y}</option>)}
         </select>
+      </div>
+
+
       </div>
 
       <div style={{ background: colors.card, padding: '15px', borderRadius: '20px', border: `2px solid ${colors.border}`, marginTop: '10px' }}>
