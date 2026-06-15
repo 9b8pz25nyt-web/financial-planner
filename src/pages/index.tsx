@@ -98,7 +98,7 @@ export default function Home() {
         <div style={{ display: 'inline-block', background: colors.border, padding: '10px', borderRadius: '15px' }}><img src={`/${colors.icons.icon}`} alt="Icon" style={{ width: '60px' }} /></div>
         <h1 style={{ color: colors.primary }}>My Financial Planner</h1>
         <select value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))} style={{ ...inputStyle, textAlign: 'center', width: '100px', display: 'block', margin: 'auto' }}>
-          {[2026, 2027, 2028].map(y => <option key={y} value={y}>{y}</option>)}
+          {[2025, 2026, 2027, 2028].map(y => <option key={y} value={y}>{y}</option>)}
         </select>
       </div>
 
