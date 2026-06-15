@@ -41,7 +41,6 @@ const MonthRow = ({ month, incomes, onAdd, onDelete, onEdit, selectedYear, color
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
                 <span>{i.notes} (₱{Number(i.amount).toLocaleString()}) {i.link && <a href={i.link} target="_blank" style={{color: colors.darkBorder}}>🔗</a>}</span>
                 <div>
-                  {/* Restored Edit Button */}
                   <button onClick={() => { setDescription(i.notes); setDisplayAmount(i.amount.toLocaleString()); setLink(i.link || ''); onEdit(i.id); }} style={{ border: 'none', background: 'transparent', cursor: 'pointer', marginRight: '5px' }}>✏️</button>
                   <button onClick={() => onDelete(i.id)} style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}>🗑️</button>
                 </div>
@@ -77,7 +76,7 @@ export default function Home() {
 
   const addIncome = (month, amount, notes, link) => setIncomes([...incomes, { id: Date.now(), month, amount, notes, link, year: selectedYear }]);
   const deleteIncome = (id) => setIncomes(incomes.filter(i => i.id !== id));
-  const editIncome = (id) => deleteIncome(id); // Simple delete-to-re-add edit pattern
+  const editIncome = (id) => deleteIncome(id); 
 
   const yearIncomes = incomes.filter(i => i.year === selectedYear);
   const total = yearIncomes.reduce((s, i) => s + (Number(i.amount) || 0), 0);
