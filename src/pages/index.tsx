@@ -96,7 +96,7 @@ export default function Home() {
       <Head><link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet" /></Head>
       
       <button onClick={() => setTheme(theme === 'kawaii' ? 'pro' : 'kawaii')} style={{ ...inputStyle, width: '100%', cursor: 'pointer', marginBottom: '20px' }}>
-        Switch to {theme === 'kawaii' ? 'Professional' : 'Kawaii'} Theme
+        Switch to {theme === 'kawaii' ? 'Blue Kawaii' : 'Pink Kawaii'} Theme
       </button>
 
       <div style={{ textAlign: 'center' }}>
