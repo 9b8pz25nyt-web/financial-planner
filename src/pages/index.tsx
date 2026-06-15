@@ -14,7 +14,7 @@ const themes = {
   }
 };
 
-const MonthRow = ({ month, incomes, onAdd, onDelete, selectedYear, colors, fontStyle, inputStyle }) => {
+const MonthRow = ({ month, incomes, onAdd, onDelete, onEdit, selectedYear, colors, fontStyle, inputStyle }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [displayAmount, setDisplayAmount] = useState('');
   const [description, setDescription] = useState('');
@@ -40,7 +40,11 @@ const MonthRow = ({ month, incomes, onAdd, onDelete, selectedYear, colors, fontS
             <div key={i.id} style={{ border: `1px solid ${colors.darkBorder}`, borderRadius: '8px', padding: '8px', marginBottom: '5px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
                 <span>{i.notes} (₱{Number(i.amount).toLocaleString()}) {i.link && <a href={i.link} target="_blank" style={{color: colors.darkBorder}}>🔗</a>}</span>
-                <button onClick={() => onDelete(i.id)} style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}>🗑️</button>
+                <div>
+                  {/* Restored Edit Button */}
+                  <button onClick={() => { setDescription(i.notes); setDisplayAmount(i.amount.toLocaleString()); setLink(i.link || ''); onEdit(i.id); }} style={{ border: 'none', background: 'transparent', cursor: 'pointer', marginRight: '5px' }}>✏️</button>
+                  <button onClick={() => onDelete(i.id)} style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}>🗑️</button>
+                </div>
               </div>
             </div>
           ))}
@@ -62,6 +66,7 @@ export default function Home() {
   const [incomes, setIncomes] = useState<any[]>([]);
   const [target, setTarget] = useState(1000000);
   const [isEditing, setIsEditing] = useState(false);
+  const [birLink, setBirLink] = useState('');
   
   const colors = themes[theme];
   const fontStyle = { fontFamily: '"Mali", cursive', color: colors.text };
@@ -72,7 +77,8 @@ export default function Home() {
 
   const addIncome = (month, amount, notes, link) => setIncomes([...incomes, { id: Date.now(), month, amount, notes, link, year: selectedYear }]);
   const deleteIncome = (id) => setIncomes(incomes.filter(i => i.id !== id));
-  
+  const editIncome = (id) => deleteIncome(id); // Simple delete-to-re-add edit pattern
+
   const yearIncomes = incomes.filter(i => i.year === selectedYear);
   const total = yearIncomes.reduce((s, i) => s + (Number(i.amount) || 0), 0);
   const progress = Math.min((total / target) * 100, 100);
@@ -91,7 +97,7 @@ export default function Home() {
       <Head><link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet" /></Head>
       
       <button onClick={() => setTheme(theme === 'kawaii' ? 'pro' : 'kawaii')} style={{ ...inputStyle, width: '100%', cursor: 'pointer', marginBottom: '20px' }}>
-        Switch to {theme === 'kawaii' ? 'Blue Kawaii' : 'Pink Kawaii'} Theme
+        Switch to {theme === 'kawaii' ? 'Professional' : 'Kawaii'} Theme
       </button>
 
       <div style={{ textAlign: 'center' }}>
@@ -109,6 +115,7 @@ export default function Home() {
           : <p style={{ cursor: 'pointer', color: colors.primary }}><strong>Target:</strong> ₱{target.toLocaleString()}</p>}
         </div>
         <div style={{ background: colors.border, height: '12px', borderRadius: '6px' }}><div style={{ width: `${progress}%`, height: '100%', background: colors.primary }} /></div>
+        <input placeholder="Paste BIR COR Link here" onChange={(e) => setBirLink(e.target.value)} value={birLink} style={{ ...inputStyle, marginTop: '10px', width: '90%' }} />
       </div>
 
       <h2 style={{ color: colors.primary, marginTop: '20px', display: 'flex', alignItems: 'center' }}>
@@ -127,7 +134,7 @@ export default function Home() {
       {quarters.map(q => (
         <div key={q.n} style={{ background: colors.card, padding: '10px', borderRadius: '15px', marginBottom: '10px', border: `1px solid ${colors.border}` }}>
           <div style={{ color: colors.primary, fontWeight: 'bold' }}>{q.n} Total: ₱{yearIncomes.filter(i => q.m.includes(i.month)).reduce((s, i) => s + (Number(i.amount) || 0), 0).toLocaleString()}</div>
-          {q.m.map(m => <MonthRow key={m} month={m} incomes={incomes} onAdd={addIncome} onDelete={deleteIncome} selectedYear={selectedYear} colors={colors} fontStyle={fontStyle} inputStyle={inputStyle} />)}
+          {q.m.map(m => <MonthRow key={m} month={m} incomes={incomes} onAdd={addIncome} onDelete={deleteIncome} onEdit={editIncome} selectedYear={selectedYear} colors={colors} fontStyle={fontStyle} inputStyle={inputStyle} />)}
         </div>
       ))}
     </div>
