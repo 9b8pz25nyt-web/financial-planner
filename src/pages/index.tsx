@@ -56,11 +56,13 @@ const MonthRow = ({ month, incomes, onAdd, onDelete, onEdit, selectedYear, color
   );
 };
 
-const DeadlineRow = ({ deadline, link, onUpdate, inputStyle }) => {
+const DeadlineRow = ({ deadline, link, isChecked, onCheck, onUpdate, inputStyle }) => {
   const [isEditing, setIsEditing] = useState(false);
   return (
     <div style={{ background: 'rgba(255, 255, 255, 0.5)', padding: '8px', marginBottom: '5px', borderRadius: '15px', border: `1px solid #ccc`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-      <div style={{ display: 'flex', alignItems: 'center', fontSize: '0.8rem' }}><input type="checkbox" style={{ marginRight: '8px' }} /> {deadline}</div>
+      <div style={{ display: 'flex', alignItems: 'center', fontSize: '0.8rem' }}>
+        <input type="checkbox" checked={isChecked} onChange={(e) => onCheck(e.target.checked)} style={{ marginRight: '8px' }} /> {deadline}
+      </div>
       {isEditing ? (
         <input placeholder="Paste Link" value={link || ''} onChange={(e) => onUpdate(e.target.value)} onBlur={() => setIsEditing(false)} autoFocus style={{ ...inputStyle, width: '100px', fontSize: '0.7rem' }} />
       ) : link ? (
@@ -80,6 +82,7 @@ export default function Home() {
   const [birLink, setBirLink] = useState('');
   const [isEditingBir, setIsEditingBir] = useState(false);
   const [deadlineLinks, setDeadlineLinks] = useState({});
+  const [deadlineChecks, setDeadlineChecks] = useState({});
   const colors = themes[theme];
   const fontStyle = { fontFamily: '"Mali", cursive', color: colors.text };
   const inputStyle = { ...fontStyle, padding: '8px', borderRadius: '10px', border: `1px solid ${colors.darkBorder}`, color: colors.text, backgroundColor: '#FFF' };
@@ -88,16 +91,19 @@ export default function Home() {
     const saved = localStorage.getItem('taxPlannerData');
     const savedBir = localStorage.getItem('birLink');
     const savedDeadlineLinks = localStorage.getItem('deadlineLinks');
+    const savedChecks = localStorage.getItem('deadlineChecks');
     if (saved) setIncomes(JSON.parse(saved));
     if (savedBir) setBirLink(savedBir);
     if (savedDeadlineLinks) setDeadlineLinks(JSON.parse(savedDeadlineLinks));
+    if (savedChecks) setDeadlineChecks(JSON.parse(savedChecks));
   }, []);
 
   useEffect(() => {
     localStorage.setItem('taxPlannerData', JSON.stringify(incomes));
     localStorage.setItem('birLink', birLink);
     localStorage.setItem('deadlineLinks', JSON.stringify(deadlineLinks));
-  }, [incomes, birLink, deadlineLinks]);
+    localStorage.setItem('deadlineChecks', JSON.stringify(deadlineChecks));
+  }, [incomes, birLink, deadlineLinks, deadlineChecks]);
 
   const addIncome = (month, amount, notes, link) => setIncomes([...incomes, { id: Date.now(), month, amount, notes, link, year: selectedYear }]);
   const deleteIncome = (id) => setIncomes(incomes.filter(i => i.id !== id));
@@ -132,13 +138,13 @@ export default function Home() {
         <p style={{ cursor: 'pointer', color: colors.primary }} onClick={() => setTargets({...targets, [selectedYear]: Number(prompt("New Target:", currentTarget.toString())) || currentTarget})}><strong>Annual Target:</strong> ₱{currentTarget.toLocaleString()}</p>
         <div style={{ background: colors.border, height: '12px', borderRadius: '6px', marginBottom: '10px' }}><div style={{ width: `${progress}%`, height: '100%', background: colors.primary, borderRadius: '6px' }} /></div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-          {isEditingBir ? <input placeholder="Paste COR Link" onChange={(e) => setBirLink(e.target.value)} value={birLink || ''} onBlur={() => setIsEditingBir(false)} style={{...inputStyle, flex:1}} /> : <span onClick={() => setIsEditingBir(true)} style={{flex:1, color: colors.text}}>{birLink ? "COR Link Saved" : "Set COR Link"}</span>}
+          {isEditingBir ? <input placeholder="Paste COR Link" onChange={(e) => setBirLink(e.target.value)} value={birLink || ''} onBlur={() => setIsEditingBir(false)} style={{...inputStyle, flex:1}} /> : <span onClick={() => setIsEditingBir(true)} style={{flex:1, color: colors.text, fontSize: '0.8rem'}}>{birLink ? "COR Link" : "Set COR Link"}</span>}
           {birLink && <a href={birLink} target="_blank" style={{fontSize: '1.2rem'}}>🔗</a>}
         </div>
       </div>
 
       <h2 style={{ color: colors.primary, marginTop: '20px', display: 'flex', alignItems: 'center' }}><img src={`/${colors.icons.calendar}`} alt="Calendar" style={{ width: '30px', marginRight: '10px' }} /> BIR Filing Deadlines</h2>
-      {deadlines.map((d, i) => <DeadlineRow key={i} deadline={d} link={deadlineLinks[i]} onUpdate={(val) => setDeadlineLinks({...deadlineLinks, [i]: val})} inputStyle={inputStyle} />)}
+      {deadlines.map((d, i) => <DeadlineRow key={i} deadline={d} link={deadlineLinks[i]} isChecked={deadlineChecks[i] || false} onCheck={(val) => setDeadlineChecks({...deadlineChecks, [i]: val})} onUpdate={(val) => setDeadlineLinks({...deadlineLinks, [i]: val})} inputStyle={inputStyle} />)}
 
       <h2 style={{ color: colors.primary, marginTop: '20px' }}><img src={`/${colors.icons.tax}`} alt="Tax" style={{ width: '30px', verticalAlign: 'middle', marginRight: '10px' }} /> Quarterly Tax Summary</h2>
       {quarters.map(q => (<div key={q.n} style={{ background: colors.card, padding: '10px', marginBottom: '5px', borderRadius: '15px', border: `1px solid ${colors.border}` }}><strong>{q.n} Tax Due: ₱{q.tax.toLocaleString()}</strong></div>))}
